@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        #ft_list {
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .todo-item {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+        .todo-item:hover {
+            background-color: #e1e1e1;
+        }
+        #newButton {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            background-color: #ff006f;
+            color: white;
+            cursor: pointer;
+        }
+        #newButton:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ft_list"></div>
+    <button id="newButton">New</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const listContainer = document.getElementById('ft_list');
+            const newButton = document.getElementById('newButton');
+
+            function loadTasks() {
+                const cookies = document.cookie.split('; ');
+                const taskCookie = cookies.find(cookie => cookie.startsWith('tasks='));
+                if (taskCookie) {
+                    const tasks = JSON.parse(decodeURIComponent(taskCookie.split('=')[1]));
+                    listContainer.innerHTML = '';
+                    tasks.reverse().forEach(task => addTaskToList(task));
+                }
+            }
+
+            function saveTasks() {
+                const tasks = Array.from(document.querySelectorAll('.todo-item')).map(item => item.textContent);
+                document.cookie = `tasks=${encodeURIComponent(JSON.stringify(tasks))}; path=/;`;
+            }
+
+            function addTaskToList(task) {
+                if (task.trim()) {
+                    const newItem = document.createElement('div')   ;
+                    newItem.textContent = task;
+                    newItem.className = 'todo-item';
+                    newItem.onclick = function() {
+                        if (confirm('Do you want to remove this TO DO?')) {
+                            newItem.remove();
+                            saveTasks();
+                        }
+                    };
+                    listContainer.insertBefore(newItem, listContainer.firstChild);
+                    saveTasks();
+                }
+            }
+
+            newButton.onclick = () => {
+                const task = prompt('Enter a new TO DO');
+                if (task !== null) {
+                    addTaskToList(task);
+                }
+            };
+
+            loadTasks();
+        });
+    </script>
+
+</body>
+</html>
