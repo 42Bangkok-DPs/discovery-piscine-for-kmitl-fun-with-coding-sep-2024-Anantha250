@@ -26,7 +26,7 @@
 <body>
 
     <div id="calculator">
-        <input type="number" id="leftOperand" placeholder="Left operand" min="0">
+        <input type="text" id="leftOperand" placeholder="Left operand" min="0">
         <select id="operator">
             <option value="+">+</option>
             <option value="-">-</option>
@@ -34,19 +34,23 @@
             <option value="/">/</option>
             <option value="%">%</option>
         </select>
-        <input type="number" id="rightOperand" placeholder="Right operand" min="0">
+        <input type="text" id="rightOperand" placeholder="Right operand" min="0">
         <input type="button" value="Try me!" id="calculateBtn">
     </div>
 
     <script>
         $(document).ready(function() {
             $('#calculateBtn').click(function() {
-                const leftOperand = parseInt($('#leftOperand').val());
+                const leftOperandInput = $('#leftOperand').val().trim();
                 const operator = $('#operator').val();
-                const rightOperand = parseInt($('#rightOperand').val());
+                const rightOperandInput = $('#rightOperand').val().trim();
+                const isNumber = (value) => /^\d+(\.\d+)?$/.test(value)
+                const leftOperand = parseFloat(leftOperandInput);
+                const rightOperand = parseFloat(rightOperandInput);
 
-                if (isNaN(leftOperand) || isNaN(rightOperand) || leftOperand < 0 || rightOperand < 0) {
+                if (!isNumber(leftOperandInput) || !isNumber(rightOperandInput || leftOperand < 0 || rightOperand < 0)) {
                     alert('Error :(');
+                    console.log('Error :(')
                     return;
                 }
 
@@ -80,6 +84,7 @@
                         break;
                     default:
                         alert('Error :(');
+                        console.log("Error :(");
                         return;
                 }
 
